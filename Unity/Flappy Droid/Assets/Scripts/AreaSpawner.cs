@@ -1,21 +1,23 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class AreaSpawner : MonoBehaviour
 {
 
     public class Platform
     {
+        public readonly GameObject main = new GameObject("Spawned platform");
+        public readonly List<GameObject> solids = new List<GameObject>();
 
-        public GameObject main = new GameObject("Spawned platform");
-        public List<GameObject> solids = new List<GameObject>();
-
-        public readonly float holeWidthUnits = 1.2f;
-
-        public Platform(GameObject samplePlatform)
+        public readonly float holeWidthUnits;
+        
+        public Platform(GameObject samplePlatform, float holeWidthUnits)
         {
+            this.holeWidthUnits = holeWidthUnits;
             CreateSolid(samplePlatform);
             CreateSolid(samplePlatform);
         }
@@ -39,8 +41,9 @@ public class AreaSpawner : MonoBehaviour
                 transform.position = new Vector2((renderer.bounds.size.x + holeWidthUnits) / -2.0f, 0);
             }
 
-            go.AddComponent<BoxCollider2D>();
-
+            BoxCollider2D collider = go.AddComponent<BoxCollider2D>();
+            collider.isTrigger = true;
+            
             solids.Add(go);
         }
 
@@ -51,17 +54,22 @@ public class AreaSpawner : MonoBehaviour
         }
     }
 
+    public TextMeshProUGUI scoreText;
     public GameObject player;
     public GameObject startPlatform;
 
     private readonly List<Platform> platforms = new List<Platform>();
-
+    private readonly float holeWidthUnits = 1.2f;
     private float offsetY = 1.5f;
     private float nextY = 0f;
+    
+    private float sceneWidthUnits = 0f;
 
     // Start is called before the first frame update
     void Start()
     {
+        sceneWidthUnits = 2 * Camera.main.orthographicSize * Camera.main.aspect;
+        
         nextY = startPlatform.transform.position.y;
         nextY = nextY - offsetY;
 
@@ -74,16 +82,27 @@ public class AreaSpawner : MonoBehaviour
         if (player.transform.position.y < nextY + offsetY)
         {
             SpawnNewPlatform();
+
+            int score;
+            try
+            {
+                score = int.Parse(scoreText.text);
+                score = score + 1;
+            }
+            catch
+            {
+                score = 0;
+            }
+
+            scoreText.text = score.ToString();
         }
     }
 
     private void SpawnNewPlatform()
     {
-        Debug.Log("Spawning new platform");
-
-        Platform platform = new Platform(startPlatform);
-        platform.MoveTo(Random.Range(-1, 2), nextY);
-
+        Platform platform = new Platform(startPlatform, holeWidthUnits);
+        float cornerX = (sceneWidthUnits - holeWidthUnits) / 2.0f - 0.25f;
+        platform.MoveTo(Random.Range(-cornerX, cornerX), nextY);
         platforms.Add(platform);
 
         nextY = nextY - offsetY;
