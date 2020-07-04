@@ -20,7 +20,7 @@ public class TouchManager : MonoBehaviour
         {
             rbody.velocity = Vector2.zero;
 
-            Vector2 force = new Vector2(100, 180);
+            Vector2 force = new Vector2(50, 70);
             if (Input.mousePosition.x < Screen.width/2)
             {
                 rbody.angularVelocity = 100;
