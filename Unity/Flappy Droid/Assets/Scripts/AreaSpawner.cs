@@ -41,9 +41,10 @@ public class AreaSpawner : MonoBehaviour
                 transform.position = new Vector2((renderer.bounds.size.x + holeWidthUnits) / -2.0f, 0);
             }
 
-            BoxCollider2D collider = go.AddComponent<BoxCollider2D>();
+            go.AddComponent<BoxCollider2D>(); // Solid part
+            BoxCollider2D collider = go.AddComponent<BoxCollider2D>(); // Trigger
             collider.isTrigger = true;
-            
+
             solids.Add(go);
         }
 
