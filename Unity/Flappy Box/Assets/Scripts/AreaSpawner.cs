@@ -55,7 +55,7 @@ public class AreaSpawner : MonoBehaviour
         }
     }
 
-    public TextMeshProUGUI scoreText;
+    public Text scoreText;
     public GameObject player;
     public GameObject startPlatform;
 

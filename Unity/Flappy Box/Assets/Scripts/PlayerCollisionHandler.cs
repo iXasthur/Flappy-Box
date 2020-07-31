@@ -4,20 +4,21 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class PlayerCollisionHandler : MonoBehaviour
 {
 
-    public TextMeshProUGUI restartHint;
+    public Text restartHint;
 
     private void Start()
     {
-        restartHint.alpha = 0;
+        restartHint.color = Color.clear;
     }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        restartHint.alpha = 1;
+        restartHint.color = Color.white;
         Globals.playing = false;
     }
 }
